@@ -23,7 +23,6 @@ class ApiService {
         throw new Error(data.message || 'API request failed');
       }
 
-      // Nếu backend trả về { data, pagination }, ưu tiên truy xuất chuẩn này
       return data;
     } catch (error) {
       console.error('API Error:', error);
@@ -57,7 +56,6 @@ class ApiService {
   }
 
   // ===== Teacher API =====
-  // Teachers
     async getTeachers(page = 1, limit = 10) {
     return this.request(`/teachers?page=${page}&limit=${limit}`);
 }

@@ -27,7 +27,7 @@ const TeacherDrawer = ({ isOpen, onClose, onTeacherCreated }) => {
     }]
   });
 
-  // Fetch positions khi drawer mở
+
   useEffect(() => {
     if (isOpen) {
       fetchPositions();
@@ -121,7 +121,7 @@ const TeacherDrawer = ({ isOpen, onClose, onTeacherCreated }) => {
       setLoading(true);
       setError('');
       
-      // Tạo user trước
+
       const userData = {
         name: formData.name,
         email: formData.email,
@@ -134,7 +134,7 @@ const TeacherDrawer = ({ isOpen, onClose, onTeacherCreated }) => {
       
       const userResponse = await apiService.createUser(userData);
       
-      // Sau đó tạo teacher
+
       const teacherData = {
         userId: userResponse.data._id,
         teacherPositionsId: formData.teacherPositionsId,

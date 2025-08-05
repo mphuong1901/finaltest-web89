@@ -8,7 +8,7 @@ const PositionList = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Fetch positions from API
+
   const fetchPositions = async () => {
     try {
       setLoading(true);

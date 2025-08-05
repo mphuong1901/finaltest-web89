@@ -5,7 +5,7 @@ const PositionDrawer = ({ isOpen, onClose, onPositionCreated }) => {
   const [formData, setFormData] = useState({
     code: '',
     name: '',
-    des: '', // Sửa từ description thành des
+    des: '', 
     status: 'active',
   });
 
@@ -24,7 +24,7 @@ const PositionDrawer = ({ isOpen, onClose, onPositionCreated }) => {
       const payload = {
         code: formData.code,
         name: formData.name,
-        des: formData.des, // Sửa field name
+        des: formData.des, 
         isActive: formData.status === 'active',
       };
         console.log("🚀 Payload gửi lên:", payload);
@@ -39,7 +39,7 @@ const PositionDrawer = ({ isOpen, onClose, onPositionCreated }) => {
       setFormData({
         code: '',
         name: '',
-        des: '', // Reset field
+        des: '', 
         status: 'active',
       });
 

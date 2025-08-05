@@ -2,18 +2,32 @@ import mongoose from 'mongoose';
 import Teacher from '../models/Teacher.js';
 import User from '../models/User.js';
 import TeacherPosition from '../models/TeacherPosition.js';
-// Hàm tạo mã giáo viên tự động (đã tối ưu)
+
 const generateTeacherCode = async () => {
   try {
-    const count = await Teacher.countDocuments({ isDeleted: false });
-    return `GV${String(count + 1).padStart(3, '0')}`;
+    let code;
+    let isUnique = false;
+
+    while (!isUnique) {
+      // Tạo chuỗi số ngẫu nhiên gồm 10 chữ số
+      code = Math.floor(1000000000 + Math.random() * 9000000000).toString();
+
+      // Kiểm tra xem code đã tồn tại trong DB chưa
+      const exists = await Teacher.findOne({ code, isDeleted: false });
+      if (!exists) {
+        isUnique = true;
+      }
+    }
+
+    return code;
   } catch (error) {
     console.error('Lỗi khi tạo mã giáo viên:', error);
     throw new Error('Không thể tạo mã giáo viên');
   }
 };
 
-// Middleware xử lý lỗi tập trung
+
+
 const handleError = (res, error, context = '') => {
   console.error(`Lỗi ${context}:`, error);
   
@@ -40,15 +54,15 @@ const handleError = (res, error, context = '') => {
   });
 };
 
-// GET /api/teachers - Lấy danh sách giáo viên có phân trang (đã tối ưu)
+
 export const getTeachers = async (req, res) => {
   try {
-    // Validate query parameters
+
     const page = Math.max(1, parseInt(req.query.page) || 1);
     const limit = Math.min(100, Math.max(1, parseInt(req.query.limit) || 10));
     const skip = (page - 1) * limit;
 
-    // Thêm logging để debug
+
     console.log(`Fetching teachers - Page: ${page}, Limit: ${limit}`);
 
     const [teachers, total] = await Promise.all([
@@ -56,22 +70,22 @@ export const getTeachers = async (req, res) => {
         .populate({
           path: 'userId',
           select: 'name email phoneNumber address identity dob',
-          match: { isDeleted: false } // Chỉ lấy user chưa bị xóa
+          match: { isDeleted: false }
         })
         .populate({
           path: 'teacherPositionsId',
           select: 'name code',
-          match: { isDeleted: false } // Chỉ lấy position chưa bị xóa
+          match: { isDeleted: false } 
         })
         .skip(skip)
         .limit(limit)
         .sort({ createdAt: -1 })
-        .lean(), // Sử dụng lean() để tăng performance
+        .lean(), 
       
       Teacher.countDocuments({ isDeleted: false })
     ]);
 
-    // Kiểm tra dữ liệu trả về
+
     if (!teachers || !Array.isArray(teachers)) {
       throw new Error('Dữ liệu giáo viên không hợp lệ');
     }
@@ -94,12 +108,12 @@ export const getTeachers = async (req, res) => {
   }
 };
 
-// POST /api/teachers - Tạo giáo viên mới (đã tối ưu)
+
 export const createTeacher = async (req, res) => {
   try {
     const { userId, startDate, endDate, teacherPositionsId, degrees } = req.body;
 
-    // Validate required fields
+
     if (!userId || !startDate) {
       return res.status(400).json({
         success: false,
@@ -107,7 +121,7 @@ export const createTeacher = async (req, res) => {
       });
     }
 
-    // Kiểm tra user t tồn tại và có role TEACHER
+
     const user = await User.findOne({ 
       _id: userId, 
       role: 'TEACHER',
@@ -121,7 +135,7 @@ export const createTeacher = async (req, res) => {
       });
     }
 
-    // Kiểm tra user đã là giáo viên chưa
+
     const existingTeacher = await Teacher.findOne({ 
       userId, 
       isDeleted: false 
@@ -134,7 +148,7 @@ export const createTeacher = async (req, res) => {
       });
     }
 
-    // Kiểm tra các vị trí có tồn tại
+
     if (teacherPositionsId?.length > 0) {
       const validPositions = await TeacherPosition.countDocuments({
         _id: { $in: teacherPositionsId },
@@ -149,10 +163,10 @@ export const createTeacher = async (req, res) => {
       }
     }
 
-    // Tạo mã giáo viên
+
     const code = await generateTeacherCode();
 
-    // Tạo giáo viên mới
+
     const teacher = new Teacher({
       userId,
       code,
@@ -181,8 +195,7 @@ export const createTeacher = async (req, res) => {
   }
 };
 
-// Các hàm còn lại (getTeacherById, updateTeacher, deleteTeacher) cũng được cập nhật tương tự
-// GET /api/teachers/:id
+
 export const getTeacherById = async (req, res) => {
   try {
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
@@ -217,7 +230,7 @@ export const getTeacherById = async (req, res) => {
   }
 };
 
-// PUT /api/teachers/:id
+
 export const updateTeacher = async (req, res) => {
   try {
     const { id } = req.params;
@@ -285,7 +298,7 @@ export const updateTeacher = async (req, res) => {
   }
 };
 
-// DELETE /api/teachers/:id
+
 export const deleteTeacher = async (req, res) => {
   try {
     const { id } = req.params;

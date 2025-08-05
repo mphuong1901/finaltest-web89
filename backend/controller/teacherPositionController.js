@@ -1,6 +1,6 @@
 import TeacherPosition from '../models/TeacherPosition.js';
 
-// Hàm tạo mã tự động (cải tiến)
+// Hàm tạo mã tự động
 const generatePositionCode = async () => {
   let code;
   let isUnique = false;
@@ -19,7 +19,7 @@ const generatePositionCode = async () => {
   return code;
 };
 
-// GET /api/teacher-positions - Lấy danh sách vị trí giáo viên
+// GET /api/teacher-positions
 export const getTeacherPositions = async (req, res) => {
   try {
     const positions = await TeacherPosition.find({ isDeleted: false })
@@ -38,7 +38,7 @@ export const getTeacherPositions = async (req, res) => {
   }
 };
 
-// POST /api/teacher-positions - Tạo vị trí giáo viên mới
+// POST /api/teacher-positions 
 export const createTeacherPosition = async (req, res) => {
   try {
     const { code, name, des, isActive } = req.body;
@@ -90,7 +90,7 @@ export const createTeacherPosition = async (req, res) => {
   }
 };
 
-// GET /api/teacher-positions/:id - Lấy thông tin chi tiết vị trí
+// GET /api/teacher-positions/:id 
 export const getTeacherPositionById = async (req, res) => {
   try {
     const position = await TeacherPosition.findOne({ 
@@ -118,7 +118,7 @@ export const getTeacherPositionById = async (req, res) => {
   }
 };
 
-// PUT /api/teacher-positions/:id - Cập nhật vị trí
+// PUT /api/teacher-positions/:id 
 export const updateTeacherPosition = async (req, res) => {
   try {
     const { name, des } = req.body;
@@ -135,7 +135,7 @@ export const updateTeacherPosition = async (req, res) => {
       });
     }
 
-    // Kiểm tra tên vị trí đã tồn tại (trừ chính nó)
+    // Kiểm tra tên vị trí đã tồn tại 
     if (name && name !== position.name) {
       const existingPosition = await TeacherPosition.findOne({ 
         name, 
@@ -179,7 +179,7 @@ export const updateTeacherPosition = async (req, res) => {
   }
 };
 
-// DELETE /api/teacher-positions/:id - Xóa vị trí (soft delete)
+// DELETE /api/teacher-positions/:id 
 export const deleteTeacherPosition = async (req, res) => {
   try {
     const position = await TeacherPosition.findOne({ 

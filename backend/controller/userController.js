@@ -1,6 +1,6 @@
 import User from '../models/User.js';
 
-// GET /api/users - Lấy danh sách người dùng
+// GET /api/users 
 export const getUsers = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
@@ -38,7 +38,7 @@ export const getUsers = async (req, res) => {
   }
 };
 
-// POST /api/users - Tạo người dùng mới
+// POST /api/users 
 export const createUser = async (req, res) => {
   try {
     const {
@@ -104,7 +104,7 @@ export const createUser = async (req, res) => {
   }
 };
 
-// GET /api/users/:id - Lấy thông tin chi tiết người dùng
+// GET /api/users/:id 
 export const getUserById = async (req, res) => {
   try {
     const user = await User.findOne({ 
@@ -132,13 +132,12 @@ export const getUserById = async (req, res) => {
   }
 };
 
-// PUT /api/users/:id - Cập nhật thông tin người dùng
+// PUT /api/users/:id 
 export const updateUser = async (req, res) => {
   try {
     const userId = req.params.id;
     const updateData = req.body;
 
-    // Kiểm tra email đã tồn tại (trừ người dùng hiện tại)
     if (updateData.email) {
       const existingEmail = await User.findOne({ 
         email: updateData.email, 
@@ -153,7 +152,6 @@ export const updateUser = async (req, res) => {
       }
     }
 
-    // Kiểm tra CCCD đã tồn tại (trừ người dùng hiện tại)
     if (updateData.identity) {
       const existingIdentity = await User.findOne({ 
         identity: updateData.identity, 
@@ -195,7 +193,7 @@ export const updateUser = async (req, res) => {
   }
 };
 
-// DELETE /api/users/:id - Xóa mềm người dùng
+
 export const deleteUser = async (req, res) => {
   try {
     const user = await User.findOneAndUpdate(
